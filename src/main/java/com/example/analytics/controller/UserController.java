@@ -6,6 +6,10 @@ import com.example.analytics.payload.*;
 import com.example.analytics.repository.UserRepository;
 import com.example.analytics.security.UserPrincipal;
 import com.example.analytics.security.CurrentUser;
+
+import java.util.ArrayList;
+import java.util.List;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,7 +28,7 @@ public class UserController {
     @GetMapping("/user/me")
     @PreAuthorize("hasRole('USER')")
     public UserProfile getCurrentUser(@CurrentUser UserPrincipal currentUser) {
-    	UserProfile UserProfile = new UserProfile(currentUser.getId(), currentUser.getUsername(), currentUser.getName());
+    	UserProfile UserProfile = new UserProfile(currentUser.getId(), currentUser.getUsername(), currentUser.getName(), currentUser.getEmail());
         return UserProfile;
     }
 
@@ -44,12 +48,21 @@ public class UserController {
     public UserProfile getUserProfile(@PathVariable(value = "username") String username) {
         User user = userRepository.findByUsername(username)
                 .orElseThrow(() -> new ResourceNotFoundException("User", "username", username));
-
-        UserProfile userProfile = new UserProfile(user.getId(), user.getUsername(), user.getName(), user.getCreatedAt());
-
+        UserProfile userProfile = new UserProfile(user.getId(), user.getUsername(), user.getName(), user.getEmail(), user.getCreatedAt());
         return userProfile;
     }
 
+    @GetMapping("/users/allUsers")
+    public List<UserProfile> getAllUser() {
+        List<User> users = userRepository.findAll();
+        List<UserProfile> userProfiles = new ArrayList<UserProfile>();
+        for (User user : users) {
+        	UserProfile userProfile = new UserProfile(user.getId(), user.getUsername(), user.getName(),  user.getEmail(), user.getCreatedAt());
+        	userProfiles.add(userProfile);
+		}
+        return userProfiles;
+    }
+    
 	@PutMapping("/users/update/{id}")
 	public String updateUser(@PathVariable Long id, @RequestBody UserProfile userProfile) {
 		try {
@@ -64,5 +77,15 @@ public class UserController {
 			return "Error" + e;
 		}
 	}
+	
+	@DeleteMapping("/users/delete/{id}")
+	  public String deleteUser(@PathVariable Long id) {
+	    try {
+	    	userRepository.deleteById(id);
+	    	return "Success";
+		} catch (Exception e) {
+			return "Error" + e;
+		}
+	  }
     
 }

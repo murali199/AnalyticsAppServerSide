@@ -9,24 +9,23 @@ public class UserProfile {
     private String email;
     private Instant joinedAt;
 
-    public UserProfile(Long id, String username, String name, Instant joinedAt) {
+    public UserProfile(Long id, String username, String name, String email, Instant joinedAt) {
         this.id = id;
         this.username = username;
         this.name = name;
+        this.email = email;
         this.joinedAt = joinedAt;
     }
-    
-    public UserProfile(Long id, String username, String name) {
-        this.id = id;
-        this.username = username;
-        this.name = name;
-    }
-    
+       
     public UserProfile(Long id, String username, String name, String email) {
         this.id = id;
         this.username = username;
         this.name = name;
-        this.setEmail(email);
+        this.email = email;
+    }
+    
+    public UserProfile() {        
+    	
     }
 
     public Long getId() {

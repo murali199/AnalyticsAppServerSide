@@ -79,13 +79,14 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                         "/**/*.jpg",
                         "/**/*.html",
                         "/**/*.css",
-                        "/**/*.js")
+                        "/**/*.js",
+                        "/**/*.pdf")
                         .permitAll()
                     .antMatchers("/api/auth/**")
                         .permitAll()
                     .antMatchers("/api/user/checkUsernameAvailability", "/api/user/checkEmailAvailability")
                         .permitAll()
-                    .antMatchers(HttpMethod.GET, "/api/analytics/**", "/api/users/**")
+                    .antMatchers(HttpMethod.GET, "/api/analytics/**", "/api/users/**", "/api/files/**")
                         .permitAll()
                     .anyRequest()
                         .authenticated();
